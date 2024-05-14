@@ -5,7 +5,7 @@ namespace MoreStatInfo
     public static class MoreStatInfoTranslate
     {
         private static Dictionary<string, string> TranslateDict = new Dictionary<string, string>();
-        public static string getTranslate(this string s) => Localization.language != Language.zhCN && TranslateDict.ContainsKey(s) && TranslateDict[s].Length > 0 ? TranslateDict[s] : s;
+        public static string getTranslate(this string s) => TranslateDict.ContainsKey(s) && TranslateDict[s].Length > 0 ? TranslateDict[s] : s;
         public static void regallTranslate()
         {
             TranslateDict.Clear();
@@ -45,13 +45,13 @@ namespace MoreStatInfo
             TranslateDict.Add("生产者", "Producer");
             TranslateDict.Add("消费者", "Consumer");
             TranslateDict.Add("总计", "Total");
-            TranslateDict.Add("本地提供", "LocalProvide");
+            TranslateDict.Add("本地提供", "LocalSupply");
             TranslateDict.Add("本地需求", "LocalDemand");
             TranslateDict.Add("本地仓储", "LocalStore");
-            TranslateDict.Add("远程提供", "RemoteProvide");
+            TranslateDict.Add("远程提供", "RemoteSupply");
             TranslateDict.Add("远程需求", "RemoteDemand");
             TranslateDict.Add("远程仓储", "RemoteStore");
-            TranslateDict.Add("实时产量", "Prodcution");
+            TranslateDict.Add("实时产量", "Production");
             TranslateDict.Add("实时消耗", "Consumption");
             TranslateDict.Add("需求产量", "Theoretical cons.");
             TranslateDict.Add("理论产量", "Theoretical prod.");

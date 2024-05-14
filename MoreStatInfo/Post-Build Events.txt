@@ -1,0 +1,4 @@
+﻿mkdir "D:\SteamLibrary\steamapps\common\Dyson Sphere Program\BepInEx\plugins\$(ProjectName)"
+del /q "D:\SteamLibrary\steamapps\common\Dyson Sphere Program\BepInEx\plugins\$(ProjectName)\$(TargetFileName)"
+copy "$(TargetPath)" "D:\SteamLibrary\steamapps\common\Dyson Sphere Program\BepInEx\plugins\$(ProjectName)\$(TargetFileName)"
+start steam://rungameid/1366540

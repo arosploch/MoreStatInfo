@@ -92,9 +92,9 @@ namespace MoreStatInfo
             {
                 if (value == _RemoteorLocal) return;
                 _RemoteorLocal = value;
-                columnsbuttonstr[8] = !RemoteorLocal ? "本地提供".getTranslate() : "远程提供".getTranslate();
-                columnsbuttonstr[9] = !RemoteorLocal ? "本地需求".getTranslate() : "远程需求".getTranslate();
-                columnsbuttonstr[10] = !RemoteorLocal ? "本地仓储".getTranslate() : "远程仓储".getTranslate();
+                columnsbuttonstr[8] = !RemoteorLocal ? "LocalSupply" : "RemoteSupply";
+                columnsbuttonstr[9] = !RemoteorLocal ? "LocalDemand" : "RemoteDemand";
+                columnsbuttonstr[10] = !RemoteorLocal ? "LocalStore" : "RemoteStore";
                 if (cursortcolumnindex >= 8 && cursortcolumnindex <= 10)
                 {
                     switch (cursortrule)
@@ -667,7 +667,9 @@ namespace MoreStatInfo
                 // 设置列宽度
                 int[] ColumnWidth = new int[11]
                 {
-                    Localization.language != Language.zhCN ? heightdis * 8 : heightdis * 4,
+                    // If local language was different, 7 * heightdis. Otherwise, 4 * heightdis?
+                    // Localization.Language != Localization.Language.zhCN ? heightdis * 8 : heightdis * 4,
+                    heightdis * 4,
                     heightdis * 4,
                     heightdis * 4,
                     heightdis * 4,
@@ -687,7 +689,7 @@ namespace MoreStatInfo
                 for (int i = 0; i <= 10; i++)
                 {
                     var buttonStyle = i % 2 == 0 ? buttonstyleyellow : buttonstyleblue;
-                    if (GUI.Button(AddRect(ref x, y, ColumnWidth[i], heightdis), columnsbuttonstr[i].getTranslate(), buttonStyle))
+                    if (GUI.Button(AddRect(ref x, y, ColumnWidth[i], heightdis), columnsbuttonstr[i], buttonStyle))
                         ChangeSort(i);
                 }
 
@@ -1561,7 +1563,7 @@ namespace MoreStatInfo
                             }
                             float miningSpeedScale = GameMain.history.miningSpeedScale;
                             int pdId = pd.id;
-                            if (sc.name != null && sc.isStellar && (sc.name.Equals("Station_miner") || sc.name.Equals("星球矿机")))
+                            if (sc.isStellar && (sc.minerId.Equals("Station_miner")))
                             {
                                 for (int i = 0; i < 5; i++)
                                 {

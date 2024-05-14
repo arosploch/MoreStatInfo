@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using UnityEngine;
+using static Localization;
 
 namespace MoreStatInfo
 {
@@ -30,7 +31,7 @@ namespace MoreStatInfo
         public static float MainWindow_y = 200;
         public static int cursortrule;
         public static int cursortcolumnindex;
-        public static string[] columnsbuttonstr = new string[11] { "物品", "实时产量", "实时消耗", "理论产量", "需求产量", "生产者", "消费者", "总计", "本地提供", "本地需求", "本地仓储" };
+        public static string[] columnsbuttonstr = new string[11] { "ItemName", "Production", "Consumption", "Theoretical prod.", "Theoretical cons.", "Producer", "Consumer", "Total", "LocalSupply", "LocalDemand", "LocalStore" };
         public static float MainWindowWidth = 1150;
         public static float MainWindowHeight = 700;
         private static bool moving;
@@ -121,7 +122,8 @@ namespace MoreStatInfo
                 temp = Math.Max(5, Math.Min(temp, 35));
                 BaseSize = temp;
             }
-            switchwitdh = Localization.language != Language.zhCN ? 7 * heightdis : 4 * heightdis;
+            // If local language was different, 7 * heightdis. Otherwise, 4 * heightdis?
+            switchwitdh = 7 * heightdis;
             switchheight = heightdis * 10;
             if (styleitemname == null)
             {
