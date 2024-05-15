@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Reflection;
 using UnityEngine;
-using static Localization;
 
 namespace MoreStatInfo
 {
-    internal class GUIDraw
+    public class GUIDraw
     {
         private bool firstDraw;
         private bool RefreshBaseSize;
         private static GameObject ui_morestatinfopanel;
         public static Texture2D mytexture;
+        
         public static GUIStyle normalPlanetButtonStyle;
         public static GUIStyle selectedPlanetButtonStyle;
         public static GUIStyle stylenormalblue;
@@ -19,6 +19,7 @@ namespace MoreStatInfo
         public static GUIStyle styleitemname = null;
         public static GUIStyle buttonstyleyellow = null;
         public static GUIStyle buttonstyleblue = null;
+        
         private int baseSize;
         public static int heightdis;
         public static int switchwitdh;
@@ -32,17 +33,15 @@ namespace MoreStatInfo
         public static int cursortrule;
         public static int cursortcolumnindex;
         public static string[] columnsbuttonstr = new string[11] { "ItemName", "Production", "Consumption", "Theoretical prod.", "Theoretical cons.", "Producer", "Consumer", "Total", "LocalSupply", "LocalDemand", "LocalStore" };
-        public static float MainWindowWidth = 1150;
-        public static float MainWindowHeight = 700;
+        public static float MainWindowWidth = 1920;
+        public static float MainWindowHeight = 1080;
         private static bool moving;
         private static bool leftscaling;
         private static bool rightscaling;
         private static bool bottomscaling;
 
         private bool _ShowGUIWindow;
-        /// <summary>
-        /// 显示面板
-        /// </summary>
+        
         public bool ShowGUIWindow
         {
             get => _ShowGUIWindow;
@@ -56,6 +55,7 @@ namespace MoreStatInfo
                 }
             }
         }
+
         public int BaseSize
         {
             get => baseSize;
@@ -113,7 +113,7 @@ namespace MoreStatInfo
                 firstDraw = false;
                 BaseSize = GUI.skin.label.fontSize;
             }
-            if (Input.GetKey(KeyCode.LeftControl))
+            if (ui_morestatinfopanel.activeSelf == true && Input.GetKey(KeyCode.LeftControl))
             {
                 int t = (int)(Input.GetAxis("Mouse Wheel") * 10);
                 int temp = BaseSize + t;
@@ -122,9 +122,10 @@ namespace MoreStatInfo
                 temp = Math.Max(5, Math.Min(temp, 35));
                 BaseSize = temp;
             }
-            // If local language was different, 7 * heightdis. Otherwise, 4 * heightdis?
+            
             switchwitdh = 7 * heightdis;
             switchheight = heightdis * 10;
+            
             if (styleitemname == null)
             {
                 emptyStyle = new GUIStyle();
@@ -140,6 +141,7 @@ namespace MoreStatInfo
                 selectedPlanetButtonStyle = new GUIStyle(GUI.skin.button);
                 selectedPlanetButtonStyle.normal.textColor = new Color32(215, 186, 245, 255);
             }
+            
             if (RefreshBaseSize)
             {
                 RefreshBaseSize = false;
@@ -151,6 +153,7 @@ namespace MoreStatInfo
                 buttonstyleblue.fontSize = BaseSize;
                 buttonstyleyellow.fontSize = BaseSize;
             }
+            
 
             UIPanelSet();
         }
@@ -166,9 +169,8 @@ namespace MoreStatInfo
             rt.localPosition = new Vector2(-Canvasrt.sizeDelta.x / 2 + MainWindow_x * CanvaswidthMultiple, Canvasrt.sizeDelta.y / 2 - MainWindow_y * CanvasheightMultiple - rt.sizeDelta.y);
         }
 
-        /// <summary>
-        /// 返回一个Rect，并根据type修改x或y
-        /// </summary>
+        #region AddRect Method Overloading
+        // The AddRect() is overloaded here for use with different inputs
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="Size"></param>
@@ -268,6 +270,7 @@ namespace MoreStatInfo
             y += height;
             return rect;
         }
+        #endregion
 
         public static Rect GetMainWindowRect()
         {
@@ -311,10 +314,8 @@ namespace MoreStatInfo
                     cursortcolumnindex = 0; break;
             }
         }
-        #region 窗口操作
-        /// <summary>
-        /// 移动窗口
-        /// </summary>
+        
+        #region WindowOperations 
         /// <param name="window_x"></param>
         /// <param name="window_y"></param>
         /// <param name="window_x_move"></param>
@@ -326,7 +327,9 @@ namespace MoreStatInfo
         public static void MoveWindow()
         {
             if (leftscaling || rightscaling || bottomscaling) return;
+            
             Vector2 temp = Input.mousePosition;
+            
             if (temp.x > MainWindow_x && temp.x < MainWindow_x + MainWindowWidth && Screen.height - temp.y > MainWindow_y && Screen.height - temp.y < MainWindow_y + 20)
             {
                 if (Input.GetMouseButton(0))
@@ -359,9 +362,7 @@ namespace MoreStatInfo
             MainWindow_x = Math.Max(10, Math.Min(Screen.width - 10, MainWindow_x));
         }
 
-        /// <summary>
-        /// 改变窗口大小
-        /// </summary>
+        // Allow the window size to be changed with mouse dragging
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="window_x"></param>
@@ -373,27 +374,27 @@ namespace MoreStatInfo
             float y = MainWindowHeight;
             if (Input.GetMouseButton(0))
             {
-                if ((temp.x + 10 > MainWindow_x && temp.x - 10 < MainWindow_x) && (Screen.height - temp.y >= MainWindow_y && Screen.height - temp.y <= MainWindow_y + y) || leftscaling)
+                if (temp.x + 10 > MainWindow_x && temp.x - 10 < MainWindow_x && (Screen.height - temp.y >= MainWindow_y && Screen.height - temp.y <= MainWindow_y + y) || leftscaling)
                 {
                     x -= temp.x - MainWindow_x;
                     MainWindow_x = temp.x;
                     leftscaling = true;
                     rightscaling = false;
                 }
-                if ((temp.x + 10 > MainWindow_x + x && temp.x - 10 < MainWindow_x + x) && (Screen.height - temp.y >= MainWindow_y && Screen.height - temp.y <= MainWindow_y + y) || rightscaling)
+                if (temp.x + 10 > MainWindow_x + x && temp.x - 10 < MainWindow_x + x && (Screen.height - temp.y >= MainWindow_y && Screen.height - temp.y <= MainWindow_y + y) || rightscaling)
                 {
                     x += temp.x - MainWindow_x - x;
                     rightscaling = true;
                     leftscaling = false;
                 }
-                if ((Screen.height - temp.y + 10 > y + MainWindow_y && Screen.height - temp.y - 10 < y + MainWindow_y) && (temp.x >= MainWindow_x && temp.x <= MainWindow_x + x) || bottomscaling)
+                if (Screen.height - temp.y + 10 > y + MainWindow_y && Screen.height - temp.y - 10 < y + MainWindow_y && (temp.x >= MainWindow_x && temp.x <= MainWindow_x + x) || bottomscaling)
                 {
                     y += Screen.height - temp.y - (MainWindow_y + y);
                     bottomscaling = true;
                 }
                 if (rightscaling || leftscaling)
                 {
-                    if ((Screen.height - temp.y + 10 > MainWindow_y && Screen.height - temp.y - 10 < MainWindow_y) && (temp.x >= MainWindow_x && temp.x <= MainWindow_x + x))
+                    if (Screen.height - temp.y + 10 > MainWindow_y && Screen.height - temp.y - 10 < MainWindow_y && (temp.x >= MainWindow_x && temp.x <= MainWindow_x + x))
                     {
                         y -= Screen.height - temp.y - MainWindow_y;
                         MainWindow_y = Screen.height - temp.y;

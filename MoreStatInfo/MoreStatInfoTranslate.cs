@@ -28,8 +28,8 @@ namespace MoreStatInfo
             TranslateDict.Add("有", "Existed");
             TranslateDict.Add("电力不足", "Insufficient power");
             TranslateDict.Add("产物筛选", "Item filter");
-            TranslateDict.Add("一级原料", "rawmaterial");
-            TranslateDict.Add("二级原料", "secondrawmaterial");
+            TranslateDict.Add("一级原料", "raw material");
+            TranslateDict.Add("二级原料", "second raw material");
             TranslateDict.Add("建筑", "Building");
             TranslateDict.Add("合成材料", "Compound");
             TranslateDict.Add("只看目标产物", "only show point item");

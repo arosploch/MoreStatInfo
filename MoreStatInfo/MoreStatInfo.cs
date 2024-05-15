@@ -13,9 +13,9 @@ namespace MoreStatInfo
     [BepInPlugin(GUID, NAME, VERSION)]
     public class MoreStatInfo : BaseUnityPlugin
     {
-        public const string GUID = "cn.blacksnipe.dsp.MoreStatInfo";
+        public const string GUID = "cn.arosploch.dsp.MoreStatInfo";
         public const string NAME = "MoreStatInfo";
-        public const string VERSION = "1.4.2";
+        public const string VERSION = "0.0.1";
 
         private static GUIDraw guiDraw;
         private int unloadPlanetNum;
@@ -81,10 +81,6 @@ namespace MoreStatInfo
         private bool _sortbypointproduct;
         private bool _sortbyPlanetDataDis;
 
-
-        /// <summary>
-        /// 本地/远程
-        /// </summary>
         public bool RemoteorLocal
         {
             get => _RemoteorLocal;
@@ -110,9 +106,6 @@ namespace MoreStatInfo
             }
         }
 
-        /// <summary>
-        /// 筛选条件
-        /// </summary>
         public bool Filtercondition
         {
             get => _filtercondition;
@@ -128,9 +121,6 @@ namespace MoreStatInfo
             }
         }
 
-        /// <summary>
-        /// 工厂信息
-        /// </summary>
         public bool Refreshfactoryinfo
         {
             get => _refreshfactoryinfo;
@@ -148,9 +138,6 @@ namespace MoreStatInfo
             }
         }
 
-        /// <summary>
-        /// 星球信息
-        /// </summary>
         public bool RefreshPlanetinfo
         {
             get => _refreshPlanetinfo;
@@ -167,9 +154,6 @@ namespace MoreStatInfo
             }
         }
 
-        /// <summary>
-        /// 多选星球
-        /// </summary>
         public bool Multplanetproduct
         {
             get => _multplanetproduct;
@@ -186,9 +170,6 @@ namespace MoreStatInfo
             }
         }
 
-        /// <summary>
-        /// 单位转化
-        /// </summary>
         public bool TGMKinttostringMode
         {
             get => _TGMKinttostringMode;
@@ -209,9 +190,6 @@ namespace MoreStatInfo
             }
         }
 
-        /// <summary>
-        /// 全部/星球
-        /// </summary>
         public bool PlanetorSum
         {
             get => _PlanetorSum;
@@ -227,9 +205,6 @@ namespace MoreStatInfo
             }
         }
 
-        /// <summary>
-        /// 依目标产物排序
-        /// </summary>
         public bool SortbyPointProduct
         {
             get => _sortbypointproduct;
@@ -252,8 +227,8 @@ namespace MoreStatInfo
         void Start()
         {
             _TGMKinttostringMode = true;
-            scale = Config.Bind("大小适配", "scale", 16);
-            ShowCounter1 = Config.Bind("打开窗口快捷键", "Key", new KeyboardShortcut(KeyCode.Alpha3, KeyCode.LeftAlt));
+            scale = Config.Bind("size", "scale", 16);
+            ShowCounter1 = Config.Bind("KeyBinding", "Key", new KeyboardShortcut(KeyCode.F2));
             guiDraw = new GUIDraw();
             scrollPosition[0] = 0;
             pdselectscrollPosition[0] = 0;
@@ -328,27 +303,21 @@ namespace MoreStatInfo
         }
 
 
-        /// <summary>
-        /// 主面板GUI逻辑
-        /// </summary>
+        // Main Panel GUI logic
         private void MainWindowShowFun()
         {
+            GUI.DrawTexture(GUI.Window(20210821, GetMainWindowRect(), MainWindow, "Stats Panel" + "(" + VERSION + ")" + "Zoom: alt + ↑↓"), mytexture);
             MoveWindow();
             Scaling_Window();
-            GUI.DrawTexture(GUI.Window(20210821, GetMainWindowRect(), MainWindow, "统计面板".getTranslate() + "(" + VERSION + ")" + "ps:ctrl+↑↓"), mytexture);
         }
 
-        /// <summary>
-        /// 菜单面板GUI逻辑
-        /// </summary>
+        // Menu Panel GUI logic
         private void SwitchWindowShowFun()
         {
-            GUI.DrawTexture(GUI.Window(202108212, GetSwitchWindowRect(), SwitchWindow, ""), mytexture);
+            GUI.DrawTexture(GUI.Window(202108212, GetSwitchWindowRect(), SwitchWindow, "Options"), mytexture);
         }
 
-        /// <summary>
-        /// 星球面板GUI逻辑
-        /// </summary>
+        // Planet Panel GUI logic
         private void PlanetWindowShowFun()
         {
             if (PlanetorSum || RefreshPlanetinfo)
@@ -357,15 +326,15 @@ namespace MoreStatInfo
             }
         }
 
-        /// <summary>
-        /// 主面板
-        /// </summary>
+        // Main Panel
         /// <param name="id"></param>
         public void MainWindow(int id)
         {
             GUILayout.BeginArea(new Rect(10, 20, MainWindowWidth, MainWindowHeight));
+            
             int x = 0;
             int y = 0;
+            
             scrollPosition = GUI.BeginScrollView(new Rect(0, 0, MainWindowWidth - 20, MainWindowHeight - 30), scrollPosition, new Rect(0, 0, windowmaxwidth, windowmaxheight));
 
             if (Refreshfactoryinfo && factoryinfoshow != null && factoryinfoshow.Count > 0)
@@ -384,11 +353,11 @@ namespace MoreStatInfo
                 y += heightdis * 4;
                 string[] PowerInfo = new string[5]
                 {
-                    "发电性能".getTranslate() + ":",
-                    "耗电需求".getTranslate() + ":",
-                    "总耗能".getTranslate() + ":",
-                    "放电功率".getTranslate() + ":",
-                    "充电功率".getTranslate() + ":"
+                    "Power Capacity" + ":",
+                    "Power Demand" + ":",
+                    "Total Energy Consumption" + ":",
+                    "Discharging Power" + ":",
+                    "Charging Power" + ":"
                 };
                 for (int i = 0; i < 5; i++)
                 {
@@ -399,48 +368,49 @@ namespace MoreStatInfo
                 }
                 windowmaxwidth = (int)MainWindowWidth - 10;
             }
+            
             else if (RefreshPlanetinfo)
             {
                 var iconoptions = new[] { GUILayout.Width(heightdis), GUILayout.Height(heightdis) };
                 GUILayout.BeginHorizontal();
-                //筛选条件列表
+                // Filter criteria list
                 {
-                    //星球属性筛选条件
+                    // Planet properties filtering criteria
                     {
                         GUILayout.BeginVertical();
-                        GUILayout.Label("附属气态星产物".getTranslate());
+                        GUILayout.Label("GasType");
                         for (int i = 15; i <= 17; i++)
                             searchcondition_bool[i] = GUILayout.Toggle(searchcondition_bool[i], searchchineseTranslate(i));
 
-                        GUILayout.Label("星球特殊性".getTranslate());
+                        GUILayout.Label("PlanetSingularity");
                         for (int i = 18; i <= 25; i++)
                             searchcondition_bool[i] = GUILayout.Toggle(searchcondition_bool[i], searchchineseTranslate(i));
 
-                        if (searchcondition_bool[26] != GUILayout.Toggle(searchcondition_bool[26], "具有工厂".getTranslate()))
+                        if (searchcondition_bool[26] != GUILayout.Toggle(searchcondition_bool[26], "With Factory"))
                         {
                             searchcondition_bool[26] = !searchcondition_bool[26];
                             if (searchcondition_bool[26])
                                 searchcondition_bool[27] = false;
                         }
-                        if (searchcondition_bool[27] != GUILayout.Toggle(searchcondition_bool[27], "不具有工厂".getTranslate()))
+                        if (searchcondition_bool[27] != GUILayout.Toggle(searchcondition_bool[27], "Without Factory"))
                         {
                             searchcondition_bool[27] = !searchcondition_bool[27];
                             if (searchcondition_bool[27])
                                 searchcondition_bool[26] = false;
                         }
-                        if (searchcondition_bool[28] != GUILayout.Toggle(searchcondition_bool[28], "电力不足".getTranslate()))
+                        if (searchcondition_bool[28] != GUILayout.Toggle(searchcondition_bool[28], "Insufficient power"))
                         {
                             searchcondition_bool[28] = !searchcondition_bool[28];
                             if (searchcondition_bool[28])
                                 searchcondition_bool[26] = true;
                         }
-                        if (searchcondition_bool[29] != GUILayout.Toggle(searchcondition_bool[29], "已加载星球".getTranslate()))
+                        if (searchcondition_bool[29] != GUILayout.Toggle(searchcondition_bool[29], "Loaded Planets"))
                         {
                             searchcondition_bool[29] = !searchcondition_bool[29];
                             if (searchcondition_bool[29])
                                 searchcondition_bool[30] = false;
                         }
-                        if (searchcondition_bool[30] != GUILayout.Toggle(searchcondition_bool[30], "未加载星球".getTranslate()))
+                        if (searchcondition_bool[30] != GUILayout.Toggle(searchcondition_bool[30], "Unloaded Planets"))
                         {
                             searchcondition_bool[30] = !searchcondition_bool[30];
                             if (searchcondition_bool[30])
@@ -449,7 +419,7 @@ namespace MoreStatInfo
                         GUILayout.EndVertical();
                     }
 
-                    //矿物筛选条件
+                    // Mineral screening conditions
                     {
                         GUILayout.BeginVertical();
                         GUILayout.Label("目标星球矿物".getTranslate());
@@ -476,7 +446,7 @@ namespace MoreStatInfo
                         GUILayout.EndVertical();
                     }
 
-                    //星球类型筛选条件
+                    // Filtering criteris for planet types
                     {
                         GUILayout.BeginVertical();
                         GUILayout.Label("星球类型".getTranslate());
@@ -816,27 +786,25 @@ namespace MoreStatInfo
             GUILayout.EndArea();
         }
 
-        /// <summary>
-        /// 筛选条件UI
-        /// </summary>
+        /// <
         /// <param name="tempheight1"></param>
         private void FilterUI(ref int y)
         {
             float x = 0;
 
             GUIStyle toggleStyle = GUI.skin.toggle;
-            GUI.Label(AddRect(ref x, y, toggleStyle.CalcSize(new GUIContent("产物筛选".getTranslate())).x, heightdis), "产物筛选".getTranslate());
+            GUI.Label(AddRect(ref x, y, toggleStyle.CalcSize(new GUIContent("Item filter")).x, heightdis), "Item filter");
             string[] toggleLabels = new string[]
             {
-                "一级原料",
-                "二级原料",
-                "建筑",
-                "合成材料",
-                "只看目标产物",
-                "依目标产物排序",
-                "实时产量<理论产量",
-                "实时产量<需求产量",
-                "理论产量<需求产量"
+                "raw material",
+                "second raw material",
+                "Building",
+                "Compound",
+                "only show point item",
+                "Sort by point item's prod.",
+                "prod.<Theoretical prod.",
+                "prod.<Theoretical cons.",
+                "Theoretical prod.<Theoretical cons."
             };
 
             bool[] toggleValues = new bool[]
@@ -1151,9 +1119,6 @@ namespace MoreStatInfo
             }
         }
 
-        /// <summary>
-        /// 刷新产物统计信息
-        /// </summary>
         private void RefreshProductStat()
         {
             var PlanetProductDiction = new Dictionary<int, Dictionary<int, float>>();
@@ -1427,9 +1392,6 @@ namespace MoreStatInfo
                         PlanetRequireDiction[pd.id][requireitem] += 10;
                     }
 
-                    //if(powerenergyinfoshow.ContainsKey(0))
-                    //    powerenergyinfoshow.Add(0, 0);
-                    //powerenergyinfoshow[0] = factoryProduction.energyConsumption;
                     if (factoryProduction.powerPool != null && factoryProduction.powerPool.Length > 0)
                     {
                         powerenergyinfoshow[pd.id][0] = factoryProduction.powerPool[0].total[0] / 10;
@@ -1443,6 +1405,7 @@ namespace MoreStatInfo
                         sumpowerinfoshow[3] = factoryProduction.powerPool[3].total[0] / 10;
                         sumpowerinfoshow[4] = factoryProduction.powerPool[2].total[0] / 10;
                     }
+
                     if (fs.storage != null)
                     {
                         if (fs.storage.storagePool != null)
@@ -1475,6 +1438,7 @@ namespace MoreStatInfo
                                 }
                             }
                         }
+
                         if (fs.storage.tankPool != null)
                         {
                             foreach (TankComponent tc in fs.storage.tankPool)
@@ -1499,7 +1463,9 @@ namespace MoreStatInfo
                             }
                         }
                     }
+
                     int tempi = 0;
+
                     foreach (StationComponent sc in fs.factory.transport.stationPool)
                     {
                         if (sc != null && sc.entityId > 0)
@@ -1561,8 +1527,10 @@ namespace MoreStatInfo
 
                                 }
                             }
+
                             float miningSpeedScale = GameMain.history.miningSpeedScale;
                             int pdId = pd.id;
+
                             if (sc.isStellar && (sc.minerId.Equals("Station_miner")))
                             {
                                 for (int i = 0; i < 5; i++)
@@ -1586,6 +1554,7 @@ namespace MoreStatInfo
                                     }
                                 }
                             }
+
                             if (sc.collectionPerTick != null && sc.isCollector)
                             {
                                 PrefabDesc prefabDesc = LDB.items.Select(ItemProto.stationCollectorId).prefabDesc;
@@ -1614,6 +1583,7 @@ namespace MoreStatInfo
                 }
 
             }
+
             foreach (KeyValuePair<int, Dictionary<int, float>> wap in PlanetProductDiction)
             {
                 if ((PlanetorSum || RefreshPlanetinfo) && !PlanetProduce.ContainsKey(wap.Key))
@@ -1634,6 +1604,7 @@ namespace MoreStatInfo
                     }
                 }
             }
+
             foreach (KeyValuePair<int, Dictionary<int, float>> wap in PlanetRequireDiction)
             {
                 if ((PlanetorSum || RefreshPlanetinfo) && !PlanetProduce.ContainsKey(wap.Key))
@@ -1654,6 +1625,7 @@ namespace MoreStatInfo
                     }
                 }
             }
+
             foreach (KeyValuePair<int, Dictionary<int, long>> wap in PlanetProducerDiction)
             {
                 if ((PlanetorSum || RefreshPlanetinfo) && !PlanetProduce.ContainsKey(wap.Key))
@@ -1674,6 +1646,7 @@ namespace MoreStatInfo
                     }
                 }
             }
+
             foreach (KeyValuePair<int, Dictionary<int, long>> wap in PlanetComsumerDiction)
             {
                 if ((PlanetorSum || RefreshPlanetinfo) && !PlanetProduce.ContainsKey(wap.Key))
@@ -1698,9 +1671,6 @@ namespace MoreStatInfo
 
         }
 
-        /// <summary>
-        /// 刷新星球信息
-        /// </summary>
         private void RefreshPlanet()
         {
             if (!OneSecondElapsed || GameMain.galaxy == null) return;
@@ -1787,6 +1757,7 @@ namespace MoreStatInfo
                     }
                 });
             }
+
             if (SortbyPointProduct && Filtercondition)
             {
                 List<long> itemproduce = new List<long>();
@@ -1799,11 +1770,14 @@ namespace MoreStatInfo
                         break;
                     }
                 }
+
                 if (pointitem == 0) return;
+
                 for (int i = 0; i < planetinfoshow.Count; i++)
                 {
                     itemproduce.Add(PlanetProduce[planetinfoshow[i]][pointitem][0]);
                 }
+
                 for (int i = 0; i < itemproduce.Count; i++)
                 {
                     int max = i;
@@ -1814,6 +1788,7 @@ namespace MoreStatInfo
                             max = j;
                         }
                     }
+
                     if (max != i)
                     {
                         int pdindex = planetinfoshow[i];
@@ -1829,7 +1804,7 @@ namespace MoreStatInfo
         }
 
         /// <summary>
-        /// 根据星球判断产物条件
+        /// Select product conditions by planet
         /// </summary>
         /// <param name="pdid"></param>
         /// <returns></returns>
